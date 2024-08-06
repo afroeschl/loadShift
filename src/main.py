@@ -119,16 +119,14 @@ def main(file_path):
 
         all_results.append((day, best_profit, num_buys, num_sells, transactions))
 
-        print(f"Day {day + 1}:")
-        print(f"  Best Profit: {best_profit}")
-        print(f"  Number of Buys: {num_buys}")
-        print(f"  Number of Sells: {num_sells}\n")
+        print(f"Day {day + 1}")
+        print(f"Profit: {round(best_profit,3)}\n")
         total_profit += best_profit
 
-    print(total_profit)
+    print(f"Total Profit: {round(total_profit,3)}")
 
     # Write all results to CSV
-    with open('output/trading_strategy.csv', 'w', newline='') as csvfile:
+    with open('output/tradingStrategy.csv', 'w', newline='') as csvfile:
         fieldnames = ['Day', 'Price', 'Action', 'Capacity', 'Current Profit']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -142,4 +140,4 @@ def main(file_path):
                 writer.writerow({'Day': f"Day {day + 1}", 'Price': price, 'Action': action, 'Capacity': f"{capacity}%", 'Current Profit': cumulative_profit})
 
 if __name__ == "__main__":
-    main('input/prices.txt')
+    main('./input/prices.txt')
