@@ -44,5 +44,3 @@ Input all the recorded prices. The prices will be split into groups of 96 repres
 ### tradingStrategy.csv
 Output of the trading choices made for each timeframe (Buy/Sell/Nothing)
 1.4 Cycles equals to a total of 14 Buys and 14 Sells per day. This number of trades per day has to be reached.
-
-The generated file is uploaded as accurate calculations take a lot of computational power and time. 

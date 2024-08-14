@@ -1,32 +1,34 @@
 import random
 import csv
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
 from numba import jit, prange
-import os
+import time
 
 # Constants
-POPULATION_SIZE = 100
-GENERATIONS = 500
-MUTATION_RATE = 0.1
-NUM_BUY_SELL = 14
-GROUP_SIZE = 95
+POPULATION_SIZE = 200
+GENERATIONS = 1000
+MUTATION_RATE = 0.1     # Chance of Mutation
+NUM_BUY_SELL = 14       # Number of buy/sell actions
+GROUP_SIZE = 96         # Number of prices grouped to one cycle
 
 @jit(nopython=True)
-def calculate_profit(actions, prices):
-    capacity = 30
-    total_profit = 0
+def calculate_profit(actions, prices):      # Calculate profit according to actions and prices
+    capacity = 30       # Battery capacity at start/end of each cycle
+    totalProfit = 0
     transactions = []
     for i in range(len(actions)):
         if actions[i] == 1 and capacity <= 90:  # 1 for buy
             capacity += 10
-            total_profit -= prices[i]
+            totalProfit -= prices[i]
         elif actions[i] == 2 and capacity >= 10:  # 2 for sell
             capacity -= 10
-            total_profit += prices[i]
-        transactions.append((prices[i], actions[i], capacity, total_profit))
-    return total_profit, transactions
+            totalProfit += prices[i]
 
+        transactions.append((prices[i], actions[i], capacity, totalProfit))
+
+    return totalProfit, transactions
+
+# Create individual with random buy/sell actions
 def create_individual(prices_len):
     actions = np.zeros(prices_len, dtype=np.int32)
     buy_indices = random.sample(range(prices_len), NUM_BUY_SELL)
@@ -37,6 +39,7 @@ def create_individual(prices_len):
         actions[s] = 2  # 2 for sell
     return actions
 
+# Randomly exchanging buy/sell actions with "do nothing" and vice versa with probability MUTATION_RATE
 def mutate(individual):
     if random.random() < MUTATION_RATE:
         buy_indices = [i for i, action in enumerate(individual) if action == 1]
@@ -51,9 +54,9 @@ def mutate(individual):
             new_sell = random.choice(non_action_indices)
             individual[random.choice(sell_indices)] = 0
             individual[new_sell] = 2
-
     return individual
 
+# Merging DNA of 2 Parents at a random crossover-point, then mutating each child till sum of actions match NUM_BUY_SELL
 def crossover(parent1, parent2):
     crossover_point = random.randint(0, len(parent1) - 1)
     child1 = np.concatenate((parent1[:crossover_point], parent2[crossover_point:]))
@@ -67,6 +70,8 @@ def crossover(parent1, parent2):
     return child1, child2
 
 @jit(nopython=True, parallel=True)
+
+# Fitness = Profit, resulting of actions and prices
 def evaluate_population(population, prices):
     fitness_scores = np.zeros(len(population))
     for i in prange(len(population)):
@@ -106,7 +111,8 @@ def genetic_algorithm(prices):
 
 def main(file_path):
     with open(file_path, 'r') as file:
-        prices = [float(line.strip()) for line in file]
+        reader = csv.reader(file)
+        prices = [float(row[0].strip()) for row in reader]
 
     price_groups = [prices[i:i + GROUP_SIZE] for i in range(0, len(prices), GROUP_SIZE)]
     all_results = []
@@ -120,8 +126,8 @@ def main(file_path):
         all_results.append((day, best_profit, num_buys, num_sells, transactions))
 
         print(f"Day {day + 1}")
-        print(f"Profit: {round(best_profit,3)}\n")
-        total_profit += best_profit
+        print(f"Profit: {round(best_profit*0.5,3)}\n")
+        total_profit += best_profit*0.5
 
     print(f"Total Profit: {round(total_profit,3)}")
 
@@ -140,4 +146,4 @@ def main(file_path):
                 writer.writerow({'Day': f"Day {day + 1}", 'Price': price, 'Action': action, 'Capacity': f"{capacity}%", 'Current Profit': cumulative_profit})
 
 if __name__ == "__main__":
-    main('./input/prices.txt')
+    main('./input/prices.csv')
