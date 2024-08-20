@@ -5,9 +5,15 @@
 ## Installation
 Clone the git repo
 To install all required packages, do the following:
-Create and activate a virtual enviroment, eg. <code>python3 -m venv venv</code>
+
+Create and activate a virtual enviroment, eg. 
+
+<code>python3 -m venv venv</code>
+
 <code>source venv/bin/activate</code>
+
 Install required packages
+
 <code>pip install -r requirements.txt</code>
 
 ## Usage
