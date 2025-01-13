@@ -62,4 +62,4 @@ Output of the trading choices made for each timeframe (Buy/Sell/Nothing)
 
 ## Disclaimer
 
-This project is a simulation using historical data. No guarantees of accuracy, profitability, or real-world applicability. Use at your own risk.
+This project uses simulated strategies and historical data, which may be incomplete or inaccurate. No guarantees of future performance or real-world applicability. Use at your own risk.  
