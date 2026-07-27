@@ -3,6 +3,7 @@ import csv
 import numpy as np
 from numba import jit, prange
 import time
+from pathlib import Path
 
 # Constants
 POPULATION_SIZE = 200
@@ -171,7 +172,10 @@ def main(file_path):
     print(f"Total Profit: {round(total_profit,3)}")
 
     # Write all results to CSV
-    with open('output/tradingStrategy.csv', 'w', newline='') as csvfile:
+    output_path = Path('output/tradingStrategy.csv')
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with output_path.open('w', newline='') as csvfile:
         fieldnames = ['Day', 'Price', 'Action', 'Capacity', 'Current Profit', 'Daily Profit']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()

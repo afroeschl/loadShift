@@ -59,6 +59,8 @@ Input all the recorded prices. The prices will be split into groups of 96 repres
 Output of the trading choices made for each timeframe (Buy/Sell/Nothing)
 1.4 Cycles equals to a total of 14 Buys and 14 Sells per day. This number of trades per day has to be reached.
 
+![Example trading day](/img/demo.png)
+
 
 ## Disclaimer
 
